@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"os"
+
+	ht "github.com/samarec1812/segmentation-service/internal/app/ports/http"
 	"github.com/samarec1812/segmentation-service/internal/config"
 	"github.com/samarec1812/segmentation-service/internal/pkg/logger"
 	"github.com/samarec1812/segmentation-service/internal/pkg/postgres"
-	"os"
 )
 
 func main() {
@@ -16,7 +17,6 @@ func main() {
 	log := logger.SetupLogger(cfg.Env)
 	log.Info("starting application")
 	log.Debug("debug message")
-	fmt.Println(cfg)
 
 	_, err := postgres.Connect(cfg.DB_URL)
 	if err != nil {
@@ -25,4 +25,11 @@ func main() {
 	}
 
 	log.Info("database connect successful")
+	a := ht.NewApp()
+	srv := ht.NewHTTPServer(cfg.Address, log, a)
+
+	if err = srv.ListenAndServe(); err != nil {
+		log.Error("failed to start server")
+		os.Exit(1)
+	}
 }
