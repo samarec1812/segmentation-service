@@ -25,3 +25,4 @@ go.work
 
 # database file
 pgdata
+db_store/
