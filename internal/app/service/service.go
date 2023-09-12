@@ -4,7 +4,7 @@ type UserRepository interface {
 	Create() error
 }
 
-type SlugRepository interface {
+type SegmentRepository interface {
 	Create() error
 	Remove() error
 	GetFromUser() error
@@ -12,29 +12,32 @@ type SlugRepository interface {
 }
 
 type App interface {
-	CreateSlug() error
-	RemoveSlug() error
-	GetSlugs() error
-	AddUserToSlug() error
+	CreateSegment(string) error
+	RemoveSegment() error
+	GetSegments() error
+	AddUserToSegment() error
 
 	CreateUser() error
 }
 
 type app struct {
 	userrepo UserRepository
-	slugrepo SlugRepository
+	sgrepo   SegmentRepository
 }
 
-func NewApp(slugRepo SlugRepository, userRepo UserRepository) App {
+func NewApp(sgRepo SegmentRepository, userRepo UserRepository) App {
 	return &app{
-		slugrepo: slugRepo,
+		sgrepo:   sgRepo,
 		userrepo: userRepo,
 	}
 }
 
-func (a *app) CreateSlug() error    { return nil }
-func (a *app) RemoveSlug() error    { return nil }
-func (a *app) GetSlugs() error      { return nil }
-func (a *app) AddUserToSlug() error { return nil }
+func (a *app) CreateSegment(slug string) error {
+	return a.sgrepo.Create()
+}
+
+func (a *app) RemoveSegment() error    { return nil }
+func (a *app) GetSegments() error      { return nil }
+func (a *app) AddUserToSegment() error { return nil }
 
 func (a *app) CreateUser() error { return nil }

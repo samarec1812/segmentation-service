@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS segments (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(100),
+    slug VARCHAR(100),
 
     PRIMARY KEY (id),
-    UNIQUE (name)
+    UNIQUE (slug)
 );
 
 

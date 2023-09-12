@@ -4,19 +4,19 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/samarec1812/segmentation-service/internal/app/repository/postgres/slug"
-	"github.com/samarec1812/segmentation-service/internal/app/repository/postgres/user"
-	"github.com/samarec1812/segmentation-service/internal/app/service"
-	"golang.org/x/exp/slog"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"golang.org/x/exp/slog"
 	"golang.org/x/sync/errgroup"
 
 	ht "github.com/samarec1812/segmentation-service/internal/app/ports/http"
+	"github.com/samarec1812/segmentation-service/internal/app/repository/postgres/segment"
+	"github.com/samarec1812/segmentation-service/internal/app/repository/postgres/user"
+	"github.com/samarec1812/segmentation-service/internal/app/service"
 	"github.com/samarec1812/segmentation-service/internal/config"
 	"github.com/samarec1812/segmentation-service/internal/pkg/logger"
 	"github.com/samarec1812/segmentation-service/internal/pkg/postgres"
@@ -35,11 +35,11 @@ func Run(cfg *config.Config) {
 	}
 
 	log.Info("database connect successful")
-	slugRepo := slug.NewSlugRepository(db)
+	slugRepo := segment.NewSlugRepository(db)
 	userRepo := user.NewUserRepository(db)
 
 	app := service.NewApp(slugRepo, userRepo)
-	srv := ht.NewHTTPServer(cfg.Address, log, app)
+	srv := ht.NewHTTPServer(cfg.HTTPServer, log, app)
 
 	eg, ctx := errgroup.WithContext(context.Background())
 	sigQuit := make(chan os.Signal, 1)
