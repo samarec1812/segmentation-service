@@ -14,8 +14,10 @@ func AppRouter(r *chi.Mux, logger *slog.Logger, a service.App) {
 	r.Use(middleware.Recoverer)
 
 	r.Post("/segment", createSegment(logger, a))
+	r.Delete("/segment", deleteSegment(logger, a))
 	//r.HandleFunc("/segment").Methods("DELETE")
-	//r.HandleFunc("/user-segment").Methods("POST")
+	r.Post("/user-segment", addUser(logger, a))
+	r.Get("/user-segment", getUserSegments(logger, a))
 	//r.HandleFunc("/user-segment").Methods("GET")
 
 }

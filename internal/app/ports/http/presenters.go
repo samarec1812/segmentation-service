@@ -6,22 +6,27 @@ type createSegmentRequest struct {
 	Slug string `json:"slug"`
 }
 
+type createSegmentResponse struct {
+	ID   int64  `json:"id"`
+	Slug string `json:"slug"`
+}
+
 type deleteSegmentRequest struct {
 	Slug string `json:"slug"`
 }
 
 type addUserToSegmentRequest struct {
-	ID          int64    `json:"id"`
+	UserID      int64    `json:"user_id"`
 	AddSlugs    []string `json:"add_slugs"`
 	RemoveSlugs []string `json:"remove_slugs"`
 }
 
 type userSegmentListRequest struct {
-	ID int64 `json:"id"`
+	UserID int64 `json:"user_id"`
 }
 
 type userSegmentListResponse struct {
-	ID       int64    `json:"id"`
+	UserID   int64    `json:"user_id"`
 	Segments []string `json:"segments"`
 }
 
@@ -51,7 +56,9 @@ func SegmentDeleteResponse() map[string]interface{} {
 
 func SegmentSuccessResponse(sg segment.Segment) map[string]interface{} {
 	resp := make(map[string]interface{})
-	resp["data"] = sg
+	resp["data"] = createSegmentResponse{
+		Slug: sg.Slug,
+	}
 	resp["error"] = nil
 
 	return resp

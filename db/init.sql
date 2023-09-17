@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS user_segments (
     segment_id BIGINT NOT NULL,
 
     PRIMARY KEY (id),
+    UNIQUE (user_id, segment_id),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (segment_id) REFERENCES segments (id) ON DELETE CASCADE
 );

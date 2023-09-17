@@ -35,7 +35,7 @@ func Run(cfg *config.Config) {
 	}
 
 	log.Info("database connect successful")
-	slugRepo := segment.NewSlugRepository(db)
+	slugRepo := segment.NewSegmentRepository(db)
 	userRepo := user.NewUserRepository(db)
 
 	app := service.NewApp(slugRepo, userRepo)
