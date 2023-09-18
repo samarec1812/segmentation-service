@@ -7,7 +7,6 @@ import (
 
 func main() {
 
-	//ctx := context.Background()
 	cfg := config.MustLoad()
 
 	app.Run(cfg)

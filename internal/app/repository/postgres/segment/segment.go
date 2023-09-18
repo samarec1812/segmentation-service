@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+
 	sq "github.com/Masterminds/squirrel"
+
 	"github.com/samarec1812/segmentation-service/internal/app/entity/segment"
 )
 
@@ -55,13 +57,19 @@ func (s *SegmentRepository) Remove(ctx context.Context, slug string) (int64, err
 func (s *SegmentRepository) GetFromUser(ctx context.Context, userID int64) ([]segment.Segment, error) {
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
-	query, args, err := builder.Select("slug").From(segmentsTable + " s").Join(fmt.Sprintf("%s us ON us.segment_id = s.id", userSegmentsTable)).Where(sq.Eq{"us.user_id": userID}).ToSql()
+	query, args, err := builder.Select("slug").
+		From(segmentsTable + " s").
+		Join(fmt.Sprintf("%s us ON us.segment_id = s.id", userSegmentsTable)).
+		Where(sq.Eq{"us.user_id": userID}).
+		ToSql()
+
 	if err != nil {
 		return nil, fmt.Errorf("error search segments: %w", err)
 	}
 
 	segments := make([]segment.Segment, 0)
 	rows, err := s.db.QueryContext(ctx, query, args...)
+
 	for rows.Next() {
 		var seg segment.Segment
 		err = rows.Scan(&seg.Slug)

@@ -1,3 +1,7 @@
+CONFIG_PATH=config/local.yaml
+
+export CONFIG_PATH
+
 .PHONY: lint
 lint:
 	$(info Run go linters in project...)
@@ -8,3 +12,9 @@ lint:
 run:
 	$(info Run project in docker-compose...)
 	docker-compose up
+
+.PHONY: build
+build:
+	$(info Build project...)
+	go run cmd/service/main.go
+
