@@ -22,13 +22,17 @@ import (
 	"github.com/samarec1812/segmentation-service/internal/pkg/postgres"
 )
 
+const (
+	ctxTimeout = 30
+)
+
 func Run(cfg *config.Config) {
 
 	log := logger.SetupLogger(cfg.Env)
 	log.Info("starting application")
 	log.Debug("debug message")
 
-	db, err := postgres.Connect(cfg.DB_URL)
+	db, err := postgres.Connect(cfg.DatabaseURL)
 	if err != nil {
 		log.Error("error connect database", err)
 		os.Exit(1)
@@ -63,7 +67,7 @@ func Run(cfg *config.Config) {
 		errCh := make(chan error)
 
 		defer func() {
-			shCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			shCtx, cancel := context.WithTimeout(context.Background(), ctxTimeout*time.Second)
 			defer cancel()
 
 			if err = srv.Shutdown(shCtx); err != nil {
@@ -91,5 +95,4 @@ func Run(cfg *config.Config) {
 	if err = eg.Wait(); err != nil {
 		log.Info("gracefully shutting down the servers:", slog.String("error", err.Error()))
 	}
-
 }

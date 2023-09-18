@@ -15,20 +15,20 @@ const (
 	userSegmentsTable = "user_segments"
 )
 
-type SegmentRepository struct {
+type Repository struct {
 	db *sql.DB
 }
 
-func NewSegmentRepository(db *sql.DB) *SegmentRepository {
-	return &SegmentRepository{db: db}
+func NewSegmentRepository(db *sql.DB) *Repository {
+	return &Repository{db: db}
 }
 
-func (s *SegmentRepository) Create(ctx context.Context, sg segment.Segment) error {
+func (r *Repository) Create(ctx context.Context, sg segment.Segment) error {
 	query, args, err := sq.Insert(segmentsTable).SetMap(sg.GetSegmentDBRecord()).PlaceholderFormat(sq.Dollar).ToSql()
 	if err != nil {
 		return err
 	}
-	_, err = s.db.ExecContext(ctx, query, args...)
+	_, err = r.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return err
 	}
@@ -36,12 +36,12 @@ func (s *SegmentRepository) Create(ctx context.Context, sg segment.Segment) erro
 	return nil
 }
 
-func (s *SegmentRepository) Remove(ctx context.Context, slug string) (int64, error) {
+func (r *Repository) Remove(ctx context.Context, slug string) (int64, error) {
 	query, args, err := sq.Delete(segmentsTable).Where(sq.Eq{"slug": slug}).PlaceholderFormat(sq.Dollar).ToSql()
 	if err != nil {
 		return 0, err
 	}
-	res, err := s.db.ExecContext(ctx, query, args...)
+	res, err := r.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func (s *SegmentRepository) Remove(ctx context.Context, slug string) (int64, err
 	return rowsDeleted, nil
 }
 
-func (s *SegmentRepository) GetFromUser(ctx context.Context, userID int64) ([]segment.Segment, error) {
+func (r *Repository) GetFromUser(ctx context.Context, userID int64) ([]segment.Segment, error) {
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	query, args, err := builder.Select("slug").
@@ -68,7 +68,10 @@ func (s *SegmentRepository) GetFromUser(ctx context.Context, userID int64) ([]se
 	}
 
 	segments := make([]segment.Segment, 0)
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := r.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("error search segments: %w", err)
+	}
 
 	for rows.Next() {
 		var seg segment.Segment
@@ -87,7 +90,7 @@ func (s *SegmentRepository) GetFromUser(ctx context.Context, userID int64) ([]se
 	return segments, nil
 }
 
-func (s *SegmentRepository) AddUser(ctx context.Context, userID int64, addSegments, removeSegments []string) error {
+func (r *Repository) AddUser(ctx context.Context, userID int64, addSegments, _ []string) error {
 
 	builder := sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
@@ -107,7 +110,7 @@ func (s *SegmentRepository) AddUser(ctx context.Context, userID int64, addSegmen
 		return nil
 	}
 
-	_, err = s.db.ExecContext(ctx, query, args...)
+	_, err = r.db.ExecContext(ctx, query, args...)
 	if err != nil {
 		return err
 	}

@@ -5,12 +5,12 @@ import (
 	"database/sql"
 )
 
-type UserRepository struct {
+type Repository struct {
 	db *sql.DB
 }
 
-func NewUserRepository(db *sql.DB) *UserRepository {
-	return &UserRepository{db: db}
+func NewUserRepository(db *sql.DB) *Repository {
+	return &Repository{db: db}
 }
 
-func (s *UserRepository) Create(ctx context.Context) error { return nil }
+func (s *Repository) Create(_ context.Context) error { return nil }

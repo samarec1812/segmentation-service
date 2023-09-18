@@ -78,4 +78,4 @@ func (a *app) AddUserToSegment(ctx context.Context, userID int64, addSegments, r
 	return err
 }
 
-func (a *app) CreateUser(ctx context.Context) error { return nil }
+func (a *app) CreateUser(_ context.Context) error { return nil }

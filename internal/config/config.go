@@ -23,7 +23,7 @@ type HTTPServer struct {
 }
 
 type DBConfig struct {
-	DB_URL string `yaml:"url" env-required:"true"`
+	DatabaseURL string `yaml:"url" env-required:"true"`
 }
 
 func MustLoad() *Config {

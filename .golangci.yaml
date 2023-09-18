@@ -47,3 +47,10 @@ linters:
     - unconvert
     - unparam
     - unused
+
+issues:
+  exclude-rules:
+    # disable funlen for app.go file
+    - path: app.go
+      linters:
+        - funlen
