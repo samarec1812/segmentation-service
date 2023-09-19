@@ -14,6 +14,11 @@ run:
 	docker-compose up
 
 .PHONY: build
+run:
+	$(info Run project in docker-compose...)
+	docker-compose up
+
+.PHONY: run-local
 build:
 	$(info Build project...)
 	go run cmd/service/main.go
